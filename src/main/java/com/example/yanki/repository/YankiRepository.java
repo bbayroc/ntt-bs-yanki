@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface YankiRepository extends MongoRepository<Yanki, Long> {
-
     Yanki findByIdentification(String identification);
-
     Yanki findByCellphone(String cellphone);
-
 }
