@@ -19,4 +19,6 @@ public class Yanki {
     private String imei;
     private String email;
     private String debitcard;
+    private double balance;
+    private String currency;
 }
