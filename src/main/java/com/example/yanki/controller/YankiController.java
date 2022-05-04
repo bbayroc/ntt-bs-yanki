@@ -9,6 +9,9 @@ import com.example.yanki.repository.YankiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping("/yanki")
 public class YankiController {
@@ -52,15 +55,23 @@ public class YankiController {
 
         Yanki yankirecipient = yankiRepository.findByCellphone(yankiTransaction.getRecipient());
 
-        if (yankisender == null || yankirecipient == null || yankiTransaction.getAmount() <= 0 )
+        if (yankisender == null || yankirecipient == null || yankiTransaction.getAmount() <= 0 || (yankisender.getBalance() != 0 && yankisender.getBalance() - yankiTransaction.getAmount() < 0))
         {return null;}
         else {
             yankiTransaction.setSender(cellphone);
-            yankisender.setBalance(yankisender.getBalance() - yankiTransaction.getAmount());
-            yankiRepository.save(yankisender);
+            if (yankisender.getBalance() != 0) {
+                yankisender.setBalance(yankisender.getBalance() - yankiTransaction.getAmount());
+                yankiRepository.save(yankisender);
+            }
 
-            yankirecipient.setBalance(yankirecipient.getBalance() + yankiTransaction.getAmount());
-            yankiRepository.save(yankirecipient);
+            if (yankirecipient.getBalance() != 0) {
+                yankirecipient.setBalance(yankirecipient.getBalance() + yankiTransaction.getAmount());
+                yankiRepository.save(yankirecipient);
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+
+            yankiTransaction.setCreated(LocalDateTime.now().format(formatter));
 
             return transactionRepository.save(yankiTransaction);
         }

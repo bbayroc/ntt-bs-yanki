@@ -10,5 +10,6 @@ public class YankiTransaction {
         private String sender;
         private String recipient;
         private double amount;
+        private String created;
 
     }
