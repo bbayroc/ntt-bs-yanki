@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mongoyanki:
+    build: 
+      context: .
+      dockerfile: Dockerfilemongo
+    environment:
+      - MONGO_INITDB_DATABASE=YankiDB
+    ports:
+      - "27021:27017"
+    networks:
+      - default
+      - nttdata-net
+  yankiapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    depends_on:
+      - "mongoyanki"
+    networks:
+      - default
+      - nttdata-net
+networks:
+  default: 
+    driver: bridge
+  nttdata-net:
+    external: true
+
